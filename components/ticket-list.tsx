@@ -98,6 +98,118 @@ export function TicketList({
     return matchesSearch && matchesPriority && matchesStatus;
   });
 
+  const groupedTickets = {
+    Open: filteredTickets.filter((ticket) => ticket.status === "Open"),
+    "In Progress": filteredTickets.filter(
+      (ticket) => ticket.status === "In Progress"
+    ),
+    Resolved: filteredTickets.filter((ticket) => ticket.status === "Resolved"),
+  };
+
+  const renderTicketCard = (ticket: Ticket) => (
+    <Card
+      key={ticket.id}
+      className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl hover:shadow-2xl transition-all duration-200"
+    >
+      <CardHeader>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div className="space-y-1 flex-1">
+            <CardTitle className="text-lg text-white text-balance">
+              {ticket.title}
+            </CardTitle>
+            <CardDescription className="text-slate-300 text-sm">
+              <span className="font-medium text-blue-400">{ticket.id}</span> •{" "}
+              {ticket.requester} • Created{" "}
+              {ticket.createdAt.toLocaleDateString()}
+            </CardDescription>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Badge className={priorityColors[ticket.priority]}>
+              {ticket.priority}
+            </Badge>
+            <Badge className={statusColors[ticket.status]}>
+              {ticket.status}
+            </Badge>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-slate-300 mb-4 text-pretty">
+          {ticket.description}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleEditTicket(ticket)}
+              className="border-slate-600 text-slate-200 bg-slate-700 hover:bg-slate-700 hover:text-white"
+            >
+              <Edit className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleDeleteTicket(ticket)}
+              className=" text-red-400 bg-slate-300 hover:bg-red-400 hover:text-white"
+            >
+              <Trash2 className="h-4 w-4 mr-1" />
+              Delete
+            </Button>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {ticket.status === "Open" && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onUpdateTicketStatus(ticket.id, "In Progress")}
+                className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+              >
+                Start Progress
+              </Button>
+            )}
+            {ticket.status === "In Progress" && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onUpdateTicketStatus(ticket.id, "Resolved")}
+                className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+              >
+                Mark Resolved
+              </Button>
+            )}
+            {ticket.status === "Resolved" && ticket.resolvedAt && (
+              <p className="text-sm text-slate-300 flex items-center">
+                <CheckCircle className="h-4 w-4 mr-1 text-green-400" />
+                Resolved on {ticket.resolvedAt.toLocaleDateString()}
+              </p>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderStatusSection = (
+    status: "Open" | "In Progress" | "Resolved",
+    tickets: Ticket[]
+  ) => {
+    if (tickets.length === 0) return null; // Hide empty sections
+
+    return (
+      <div key={status} className="space-y-3">
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-white">{status}</h3>
+          <Badge className={`${statusColors[status]} text-xs`}>
+            {tickets.length}
+          </Badge>
+        </div>
+        <div className="space-y-3">{tickets.map(renderTicketCard)}</div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Search and Filter */}
@@ -170,8 +282,8 @@ export function TicketList({
         </div>
       </div>
 
-      {/* Tickets List */}
-      <div className="space-y-4">
+      {/* Tickets List - Grouped by Status */}
+      <div className="space-y-8">
         {filteredTickets.length === 0 ? (
           <Card className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl">
             <CardContent className="flex items-center justify-center py-8">
@@ -181,96 +293,14 @@ export function TicketList({
             </CardContent>
           </Card>
         ) : (
-          filteredTickets.map((ticket) => (
-            <Card
-              key={ticket.id}
-              className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl hover:shadow-2xl transition-all duration-200"
-            >
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="space-y-1 flex-1">
-                    <CardTitle className="text-lg text-white text-balance">
-                      {ticket.title}
-                    </CardTitle>
-                    <CardDescription className="text-slate-300 text-sm">
-                      <span className="font-medium text-blue-400">
-                        {ticket.id}
-                      </span>{" "}
-                      • {ticket.requester} • Created{" "}
-                      {ticket.createdAt.toLocaleDateString()}
-                    </CardDescription>
-                  </div>
-                  <div className="flex gap-2 flex-wrap">
-                    <Badge className={priorityColors[ticket.priority]}>
-                      {ticket.priority}
-                    </Badge>
-                    <Badge className={statusColors[ticket.status]}>
-                      {ticket.status}
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-slate-300 mb-4 text-pretty">
-                  {ticket.description}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex gap-2 flex-wrap">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEditTicket(ticket)}
-                      className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
-                    >
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDeleteTicket(ticket)}
-                      className=" text-red-400  hover:bg-red-500 hover:text-white"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
-                    </Button>
-                  </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {ticket.status === "Open" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          onUpdateTicketStatus(ticket.id, "In Progress")
-                        }
-                        className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
-                      >
-                        Start Progress
-                      </Button>
-                    )}
-                    {ticket.status === "In Progress" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          onUpdateTicketStatus(ticket.id, "Resolved")
-                        }
-                        className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
-                      >
-                        Mark Resolved
-                      </Button>
-                    )}
-                    {ticket.status === "Resolved" && ticket.resolvedAt && (
-                      <p className="text-sm text-slate-300 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-1 text-green-400" />
-                        Resolved on {ticket.resolvedAt.toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+          <>
+            {groupedTickets.Open.length > 0 &&
+              renderStatusSection("Open", groupedTickets.Open)}
+            {groupedTickets["In Progress"].length > 0 &&
+              renderStatusSection("In Progress", groupedTickets["In Progress"])}
+            {groupedTickets.Resolved.length > 0 &&
+              renderStatusSection("Resolved", groupedTickets.Resolved)}
+          </>
         )}
       </div>
 

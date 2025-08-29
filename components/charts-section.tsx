@@ -27,6 +27,11 @@ export function ChartsSection({
   statusChartData,
   priorityChartData,
 }: ChartsSectionProps) {
+  const filteredStatusData = statusChartData.filter((item) => item.value > 0);
+  const filteredPriorityData = priorityChartData.filter(
+    (item) => item.count > 0
+  );
+
   return (
     <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
       <Card className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl">
@@ -56,7 +61,7 @@ export function ChartsSection({
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={statusChartData}
+                  data={filteredStatusData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -65,7 +70,7 @@ export function ChartsSection({
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {statusChartData.map((entry, index) => (
+                  {filteredStatusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -102,7 +107,7 @@ export function ChartsSection({
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={priorityChartData}
+                data={filteredPriorityData}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
