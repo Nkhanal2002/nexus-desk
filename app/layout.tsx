@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NexusDesk",
-  description: "Professional IT Support Management System",
+  title: "NexusDesk - IT Helpdesk Ticketing System",
+  description: "IT Helpdesk Ticketing System",
 };
 
 export default function RootLayout({

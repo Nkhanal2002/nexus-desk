@@ -20,6 +20,17 @@ interface Ticket {
   resolvedAt?: Date;
 }
 
+interface ParsedTicket {
+  id: string;
+  title: string;
+  description: string;
+  requester: string;
+  priority: "High" | "Medium" | "Low";
+  status: "Open" | "In Progress" | "Resolved";
+  createdAt: string;
+  resolvedAt?: string;
+}
+
 export default function ITHelpdeskDashboard() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -27,11 +38,15 @@ export default function ITHelpdeskDashboard() {
   useEffect(() => {
     const savedTickets = localStorage.getItem("helpdesk-tickets");
     if (savedTickets) {
-      const parsedTickets = JSON.parse(savedTickets).map((ticket: any) => ({
-        ...ticket,
-        createdAt: new Date(ticket.createdAt),
-        resolvedAt: ticket.resolvedAt ? new Date(ticket.resolvedAt) : undefined,
-      }));
+      const parsedTickets = JSON.parse(savedTickets).map(
+        (ticket: ParsedTicket) => ({
+          ...ticket,
+          createdAt: new Date(ticket.createdAt),
+          resolvedAt: ticket.resolvedAt
+            ? new Date(ticket.resolvedAt)
+            : undefined,
+        })
+      );
       setTickets(parsedTickets);
     } else {
       // Initialize with sample data
@@ -192,6 +207,7 @@ export default function ITHelpdeskDashboard() {
         onOpenChange={setIsCreateDialogOpen}
         onCreateTicket={createTicket}
       />
+
       <Footer />
     </div>
   );
