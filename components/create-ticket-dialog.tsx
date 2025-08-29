@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface CreateTicketDialogProps {
   isOpen: boolean;
@@ -30,6 +31,14 @@ export function CreateTicketDialog({
   onOpenChange,
   onCreateTicket,
 }: CreateTicketDialogProps) {
+  const handleSubmit = (formData: FormData) => {
+    onCreateTicket(formData);
+    toast.success("Ticket created successfully!", {
+      description: "Your support ticket has been submitted and assigned an ID.",
+    });
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-600 mx-4">
@@ -39,7 +48,7 @@ export function CreateTicketDialog({
             Fill out the form below to create a new support ticket.
           </DialogDescription>
         </DialogHeader>
-        <form action={onCreateTicket} className="space-y-4">
+        <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="title" className="text-slate-200">
               Title

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toaster } from "sonner";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { StatsCards } from "@/components/stats-cards";
 import { ChartsSection } from "@/components/charts-section";
@@ -105,6 +106,18 @@ export default function ITHelpdeskDashboard() {
     setIsCreateDialogOpen(false);
   };
 
+  const editTicket = (ticketId: string, updatedData: Partial<Ticket>) => {
+    setTickets(
+      tickets.map((ticket) =>
+        ticket.id === ticketId ? { ...ticket, ...updatedData } : ticket
+      )
+    );
+  };
+
+  const deleteTicket = (ticketId: string) => {
+    setTickets(tickets.filter((ticket) => ticket.id !== ticketId));
+  };
+
   const updateTicketStatus = (
     ticketId: string,
     newStatus: "Open" | "In Progress" | "Resolved"
@@ -161,6 +174,18 @@ export default function ITHelpdeskDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <Toaster
+        theme="dark"
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "#1e293b",
+            border: "1px solid #475569",
+            color: "#f1f5f9",
+          },
+        }}
+      />
+
       <DashboardHeader onCreateTicket={() => setIsCreateDialogOpen(true)} />
 
       <div className="p-4 sm:p-6">
@@ -197,6 +222,8 @@ export default function ITHelpdeskDashboard() {
             <TicketList
               tickets={tickets}
               onUpdateTicketStatus={updateTicketStatus}
+              onEditTicket={editTicket}
+              onDeleteTicket={deleteTicket}
             />
           </TabsContent>
         </Tabs>

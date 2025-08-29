@@ -18,7 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter, CheckCircle } from "lucide-react";
+import { Search, Filter, CheckCircle, Edit, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { EditTicketDialog } from "./edit-ticket-dialog";
 
 interface Ticket {
   id: string;
@@ -37,6 +39,8 @@ interface TicketListProps {
     ticketId: string,
     newStatus: "Open" | "In Progress" | "Resolved"
   ) => void;
+  onEditTicket: (ticketId: string, updatedData: Partial<Ticket>) => void;
+  onDeleteTicket: (ticketId: string) => void;
 }
 
 const priorityColors = {
@@ -51,10 +55,35 @@ const statusColors = {
   Resolved: "bg-green-500 text-white",
 };
 
-export function TicketList({ tickets, onUpdateTicketStatus }: TicketListProps) {
+export function TicketList({
+  tickets,
+  onUpdateTicketStatus,
+  onEditTicket,
+  onDeleteTicket,
+}: TicketListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterPriority, setFilterPriority] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const handleDeleteTicket = (ticket: Ticket) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ticket "${ticket.title}"? This action cannot be undone.`
+      )
+    ) {
+      onDeleteTicket(ticket.id);
+      toast.success("Ticket deleted successfully!", {
+        description: `Ticket "${ticket.title}" has been removed.`,
+      });
+    }
+  };
+
+  const handleEditTicket = (ticket: Ticket) => {
+    setEditingTicket(ticket);
+    setIsEditDialogOpen(true);
+  };
 
   const filteredTickets = tickets.filter((ticket) => {
     const matchesSearch =
@@ -70,7 +99,7 @@ export function TicketList({ tickets, onUpdateTicketStatus }: TicketListProps) {
   });
 
   return (
-    <div className="space-y-6 min-h-[80vh]">
+    <div className="space-y-6">
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
@@ -186,42 +215,72 @@ export function TicketList({ tickets, onUpdateTicketStatus }: TicketListProps) {
                   {ticket.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
-                  {ticket.status === "Open" && (
+                  <div className="flex gap-2 flex-wrap">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() =>
-                        onUpdateTicketStatus(ticket.id, "In Progress")
-                      }
+                      onClick={() => handleEditTicket(ticket)}
                       className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
                     >
-                      Start Progress
+                      <Edit className="h-4 w-4 mr-1" />
+                      Edit
                     </Button>
-                  )}
-                  {ticket.status === "In Progress" && (
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() =>
-                        onUpdateTicketStatus(ticket.id, "Resolved")
-                      }
-                      className="border-slate-600 text-slate-200  bg-slate-600 hover:bg-slate-700 hover:text-white"
+                      onClick={() => handleDeleteTicket(ticket)}
+                      className=" text-red-400  hover:bg-red-500 hover:text-white"
                     >
-                      Mark Resolved
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
                     </Button>
-                  )}
-                  {ticket.status === "Resolved" && ticket.resolvedAt && (
-                    <p className="text-sm text-slate-300 flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-1 text-green-400" />
-                      Resolved on {ticket.resolvedAt.toLocaleDateString()}
-                    </p>
-                  )}
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {ticket.status === "Open" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          onUpdateTicketStatus(ticket.id, "In Progress")
+                        }
+                        className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
+                      >
+                        Start Progress
+                      </Button>
+                    )}
+                    {ticket.status === "In Progress" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          onUpdateTicketStatus(ticket.id, "Resolved")
+                        }
+                        className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
+                      >
+                        Mark Resolved
+                      </Button>
+                    )}
+                    {ticket.status === "Resolved" && ticket.resolvedAt && (
+                      <p className="text-sm text-slate-300 flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-1 text-green-400" />
+                        Resolved on {ticket.resolvedAt.toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))
         )}
       </div>
+
+      {/* EditTicketDialog */}
+      <EditTicketDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        ticket={editingTicket}
+        onEditTicket={onEditTicket}
+      />
     </div>
   );
 }
