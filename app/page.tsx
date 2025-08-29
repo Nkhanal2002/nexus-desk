@@ -1,103 +1,198 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DashboardHeader } from "@/components/dashboard-header";
+import { StatsCards } from "@/components/stats-cards";
+import { ChartsSection } from "@/components/charts-section";
+import { TicketList } from "@/components/ticket-list";
+import { CreateTicketDialog } from "@/components/create-ticket-dialog";
+import { Footer } from "@/components/footer";
+
+interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  requester: string;
+  priority: "High" | "Medium" | "Low";
+  status: "Open" | "In Progress" | "Resolved";
+  createdAt: Date;
+  resolvedAt?: Date;
+}
+
+export default function ITHelpdeskDashboard() {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const savedTickets = localStorage.getItem("helpdesk-tickets");
+    if (savedTickets) {
+      const parsedTickets = JSON.parse(savedTickets).map((ticket: any) => ({
+        ...ticket,
+        createdAt: new Date(ticket.createdAt),
+        resolvedAt: ticket.resolvedAt ? new Date(ticket.resolvedAt) : undefined,
+      }));
+      setTickets(parsedTickets);
+    } else {
+      // Initialize with sample data
+      const sampleTickets: Ticket[] = [
+        {
+          id: "TK-001",
+          title: "Email not working",
+          description: "Cannot send or receive emails in Outlook",
+          requester: "john.doe@company.com",
+          priority: "High",
+          status: "Open",
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        },
+        {
+          id: "TK-002",
+          title: "Printer offline",
+          description: "Office printer showing offline status",
+          requester: "jane.smith@company.com",
+          priority: "Medium",
+          status: "In Progress",
+          createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        },
+        {
+          id: "TK-003",
+          title: "Password reset request",
+          description: "Need to reset Active Directory password",
+          requester: "mike.johnson@company.com",
+          priority: "Low",
+          status: "Resolved",
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          resolvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        },
+      ];
+      setTickets(sampleTickets);
+      localStorage.setItem("helpdesk-tickets", JSON.stringify(sampleTickets));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (tickets.length > 0) {
+      localStorage.setItem("helpdesk-tickets", JSON.stringify(tickets));
+    }
+  }, [tickets]);
+
+  const createTicket = (formData: FormData) => {
+    const newTicket: Ticket = {
+      id: `TK-${String(tickets.length + 1).padStart(3, "0")}`,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      requester: formData.get("requester") as string,
+      priority: formData.get("priority") as "High" | "Medium" | "Low",
+      status: "Open",
+      createdAt: new Date(),
+    };
+    setTickets([...tickets, newTicket]);
+    setIsCreateDialogOpen(false);
+  };
+
+  const updateTicketStatus = (
+    ticketId: string,
+    newStatus: "Open" | "In Progress" | "Resolved"
+  ) => {
+    setTickets(
+      tickets.map((ticket) => {
+        if (ticket.id === ticketId) {
+          const updatedTicket = { ...ticket, status: newStatus };
+          if (newStatus === "Resolved" && !ticket.resolvedAt) {
+            updatedTicket.resolvedAt = new Date();
+          }
+          return updatedTicket;
+        }
+        return ticket;
+      })
+    );
+  };
+
+  const totalTickets = tickets.length;
+  const openTickets = tickets.filter((t) => t.status === "Open").length;
+  const inProgressTickets = tickets.filter(
+    (t) => t.status === "In Progress"
+  ).length;
+  const resolvedTickets = tickets.filter((t) => t.status === "Resolved").length;
+  const resolutionRate =
+    totalTickets > 0 ? Math.round((resolvedTickets / totalTickets) * 100) : 0;
+
+  const avgResolutionTime =
+    tickets
+      .filter((t) => t.resolvedAt)
+      .reduce((acc, ticket) => {
+        const timeDiff =
+          ticket.resolvedAt!.getTime() - ticket.createdAt.getTime();
+        return acc + timeDiff / (1000 * 60 * 60 * 24); // Convert to days
+      }, 0) / resolvedTickets || 0;
+
+  const statusChartData = [
+    { name: "Open", value: openTickets, color: "#3b82f6" },
+    { name: "In Progress", value: inProgressTickets, color: "#eab308" },
+    { name: "Resolved", value: resolvedTickets, color: "#22c55e" },
+  ];
+
+  const priorityChartData = [
+    {
+      name: "High",
+      count: tickets.filter((t) => t.priority === "High").length,
+    },
+    {
+      name: "Medium",
+      count: tickets.filter((t) => t.priority === "Medium").length,
+    },
+    { name: "Low", count: tickets.filter((t) => t.priority === "Low").length },
+  ];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <DashboardHeader onCreateTicket={() => setIsCreateDialogOpen(true)} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <div className="p-4 sm:p-6">
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-slate-600/30">
+            <TabsTrigger
+              value="dashboard"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+            >
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger
+              value="tickets"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+            >
+              Tickets
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            <StatsCards
+              totalTickets={totalTickets}
+              openTickets={openTickets}
+              resolutionRate={resolutionRate}
+              avgResolutionTime={avgResolutionTime}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <ChartsSection
+              statusChartData={statusChartData}
+              priorityChartData={priorityChartData}
+            />
+          </TabsContent>
+
+          <TabsContent value="tickets" className="space-y-6">
+            <TicketList
+              tickets={tickets}
+              onUpdateTicketStatus={updateTicketStatus}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      <CreateTicketDialog
+        isOpen={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onCreateTicket={createTicket}
+      />
+      <Footer />
     </div>
   );
 }
