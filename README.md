@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NexusDesk - IT Helpdesk Ticketing System
 
-## Getting Started
+A comprehensive, modern IT helpdesk ticketing system built with Next.js and React. Features real-time analytics, priority management, and streamlined workflow tracking designed for enterprise IT support environments.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Ticket Management** - Complete CRUD operations with priority levels (High/Medium/Low)
+- **Status Tracking** - Automated workflow: Open → In Progress → Resolved
+- **Analytics Dashboard** - Real-time metrics including resolution rates and response times
+- **Advanced Search & Filtering** - Multi-criteria ticket filtering and search functionality
+- **Data Persistence** - Local storage implementation for reliable data management
+- **Responsive Design** - Mobile-first approach with dark theme and gradient UI
+- **Component Architecture** - Modular, reusable React components
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Charts**: Recharts for data visualization
+- **Storage**: localStorage API
+- **Icons**: Lucide React
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Dashboard Features
 
-## Learn More
+- **Statistics Cards** - Total tickets, resolution rates, average response time
+- **Visual Charts** - Pie chart for status distribution, bar chart for priority breakdown
+- **Ticket List** - Sortable table with status badges and priority indicators
+- **Quick Actions** - One-click status updates and ticket management
 
-To learn more about Next.js, take a look at the following resources:
+## Professional Highlights
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Enterprise-grade UI/UX design suitable for corporate environments
+- Comprehensive data analytics for IT performance tracking
+- Scalable component architecture following React best practices
+- Responsive design optimized for all device sizes
+- Professional dark theme with modern gradient aesthetics
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Impact
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project shows my proficiency in modern web development, IT service management concepts, data visualization, and user experience design - all critical skills for IT Support Specialist roles.

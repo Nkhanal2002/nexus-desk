@@ -193,7 +193,7 @@ export function TicketList({ tickets, onUpdateTicketStatus }: TicketListProps) {
                       onClick={() =>
                         onUpdateTicketStatus(ticket.id, "In Progress")
                       }
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                      className="border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
                     >
                       Start Progress
                     </Button>
@@ -205,7 +205,7 @@ export function TicketList({ tickets, onUpdateTicketStatus }: TicketListProps) {
                       onClick={() =>
                         onUpdateTicketStatus(ticket.id, "Resolved")
                       }
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                      className="border-slate-600 text-slate-200  bg-slate-600 hover:bg-slate-700 hover:text-white"
                     >
                       Mark Resolved
                     </Button>
