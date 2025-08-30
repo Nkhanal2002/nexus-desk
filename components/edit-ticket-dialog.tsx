@@ -80,7 +80,7 @@ export function EditTicketDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-600 mx-4">
+      <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-600 mx-auto">
         <DialogHeader>
           <DialogTitle className="text-white">Edit Ticket</DialogTitle>
           <DialogDescription className="text-slate-300">
