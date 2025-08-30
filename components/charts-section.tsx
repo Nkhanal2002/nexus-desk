@@ -33,14 +33,14 @@ export function ChartsSection({
   );
 
   return (
-    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 px-2 sm:px-0">
       <Card className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-white text-balance">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-white text-balance text-sm sm:text-base">
             Ticket Status Distribution
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2 sm:p-6">
           <ChartContainer
             config={{
               Open: {
@@ -56,7 +56,7 @@ export function ChartsSection({
                 color: "#22c55e",
               },
             }}
-            className="h-[250px] sm:h-[300px]"
+            className="h-[200px] sm:h-[250px] lg:h-[300px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -66,7 +66,8 @@ export function ChartsSection({
                   cy="50%"
                   labelLine={false}
                   label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius="80%"
+                  outerRadius="70%"
+                  innerRadius="0%"
                   fill="#8884d8"
                   dataKey="value"
                 >
@@ -82,12 +83,12 @@ export function ChartsSection({
       </Card>
 
       <Card className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-sm border-slate-600/30 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-white text-balance">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-white text-balance text-sm sm:text-base">
             Priority Distribution
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2 sm:p-6">
           <ChartContainer
             config={{
               High: {
@@ -103,12 +104,12 @@ export function ChartsSection({
                 color: "#22c55e",
               },
             }}
-            className="h-[250px] sm:h-[300px]"
+            className="h-[200px] sm:h-[250px] lg:h-[300px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={filteredPriorityData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
                 <XAxis
@@ -117,14 +118,20 @@ export function ChartsSection({
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  textAnchor="end"
+                  height={60}
                 />
                 <YAxis
                   stroke="#94a3b8"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  width={30}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip
+                  content={<ChartTooltipContent />}
+                  cursor={false}
+                />
                 <Bar
                   dataKey="count"
                   fill="url(#barGradient)"
