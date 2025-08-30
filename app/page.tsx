@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "sonner";
+import { motion } from "framer-motion";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { HeroSection } from "@/components/hero-section";
 import { StatsCards } from "@/components/stats-cards";
 import { ChartsSection } from "@/components/charts-section";
 import { TicketList } from "@/components/ticket-list";
 import { CreateTicketDialog } from "@/components/create-ticket-dialog";
+import { BackToTop } from "@/components/back-to-top";
 import { Footer } from "@/components/footer";
 
 interface Ticket {
@@ -35,6 +38,7 @@ interface ParsedTicket {
 export default function ITHelpdeskDashboard() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
     const savedTickets = localStorage.getItem("helpdesk-tickets");
@@ -172,6 +176,26 @@ export default function ITHelpdeskDashboard() {
     { name: "Low", count: tickets.filter((t) => t.priority === "Low").length },
   ];
 
+  const handleNavigation = (section: string) => {
+    if (section === "main-dashboard") {
+      setActiveTab("dashboard");
+      setTimeout(() => {
+        const element = document.getElementById("main-dashboard");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else if (section === "main-tickets") {
+      setActiveTab("tickets");
+      setTimeout(() => {
+        const element = document.getElementById("main-tickets");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Toaster
@@ -186,54 +210,105 @@ export default function ITHelpdeskDashboard() {
         }}
       />
 
-      <DashboardHeader onCreateTicket={() => setIsCreateDialogOpen(true)} />
+      <DashboardHeader
+        onCreateTicket={() => setIsCreateDialogOpen(true)}
+        onNavigate={handleNavigation}
+      />
 
-      <div className="min-h-screen p-4 sm:p-6 z-10">
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-slate-600/30">
-            <TabsTrigger
-              value="dashboard"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+      <HeroSection />
+
+      <motion.div
+        className="p-4 sm:p-6"
+        id="main-dashboard"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 2.5 }}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 3 }}
+        >
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 3.2 }}
             >
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger
+              <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-slate-600/30">
+                <TabsTrigger
+                  value="dashboard"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+                >
+                  Dashboard
+                </TabsTrigger>
+                <TabsTrigger
+                  value="tickets"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+                >
+                  Tickets
+                </TabsTrigger>
+              </TabsList>
+            </motion.div>
+
+            <TabsContent value="dashboard" className="space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 3.5 }}
+              >
+                <StatsCards
+                  totalTickets={totalTickets}
+                  openTickets={openTickets}
+                  resolutionRate={resolutionRate}
+                  avgResolutionTime={avgResolutionTime}
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 3.8 }}
+              >
+                <ChartsSection
+                  statusChartData={statusChartData}
+                  priorityChartData={priorityChartData}
+                />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent
               value="tickets"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white text-slate-300"
+              className="space-y-6"
+              id="main-tickets"
             >
-              Tickets
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard" className="space-y-6">
-            <StatsCards
-              totalTickets={totalTickets}
-              openTickets={openTickets}
-              resolutionRate={resolutionRate}
-              avgResolutionTime={avgResolutionTime}
-            />
-            <ChartsSection
-              statusChartData={statusChartData}
-              priorityChartData={priorityChartData}
-            />
-          </TabsContent>
-
-          <TabsContent value="tickets" className="space-y-6">
-            <TicketList
-              tickets={tickets}
-              onUpdateTicketStatus={updateTicketStatus}
-              onEditTicket={editTicket}
-              onDeleteTicket={deleteTicket}
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <TicketList
+                  tickets={tickets}
+                  onUpdateTicketStatus={updateTicketStatus}
+                  onEditTicket={editTicket}
+                  onDeleteTicket={deleteTicket}
+                />
+              </motion.div>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
+      </motion.div>
 
       <CreateTicketDialog
         isOpen={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onCreateTicket={createTicket}
       />
+
+      <BackToTop />
 
       <Footer />
     </div>

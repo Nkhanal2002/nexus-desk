@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Plus, TicketIcon } from "lucide-react";
+import Link from "next/link";
 
 interface DashboardHeaderProps {
   onCreateTicket: () => void;
