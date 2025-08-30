@@ -188,7 +188,7 @@ export default function ITHelpdeskDashboard() {
 
       <DashboardHeader onCreateTicket={() => setIsCreateDialogOpen(true)} />
 
-      <div className="p-4 sm:p-6">
+      <div className="min-h-screen p-4 sm:p-6 z-10">
         <Tabs defaultValue="dashboard" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-slate-600/30">
             <TabsTrigger

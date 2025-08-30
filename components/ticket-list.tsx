@@ -143,7 +143,7 @@ export function TicketList({
               size="sm"
               variant="outline"
               onClick={() => handleEditTicket(ticket)}
-              className="border-slate-600 text-slate-200 bg-slate-700 hover:bg-slate-700 hover:text-white"
+              className="border-slate-600 cursor-pointer text-slate-200 bg-slate-700 hover:bg-slate-700 hover:text-white"
             >
               <Edit className="h-4 w-4 mr-1" />
               Edit
@@ -152,7 +152,7 @@ export function TicketList({
               size="sm"
               variant="outline"
               onClick={() => handleDeleteTicket(ticket)}
-              className=" text-red-400 bg-slate-300 hover:bg-red-400 hover:text-white"
+              className=" text-red-400 cursor-pointer bg-slate-300 hover:bg-red-400 hover:text-white"
             >
               <Trash2 className="h-4 w-4 mr-1" />
               Delete
@@ -164,7 +164,7 @@ export function TicketList({
                 size="sm"
                 variant="outline"
                 onClick={() => onUpdateTicketStatus(ticket.id, "In Progress")}
-                className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                className=" cursor-pointer border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
               >
                 Start Progress
               </Button>
@@ -174,7 +174,7 @@ export function TicketList({
                 size="sm"
                 variant="outline"
                 onClick={() => onUpdateTicketStatus(ticket.id, "Resolved")}
-                className="border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                className=" cursor-pointer border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
               >
                 Mark Resolved
               </Button>
