@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "sonner";
 import { motion } from "framer-motion";
-import { DashboardHeader } from "@/components/dashboard-header";
+import { Header } from "@/components/header";
 import { HeroSection } from "@/components/hero-section";
 import { StatsCards } from "@/components/stats-cards";
 import { ChartsSection } from "@/components/charts-section";
@@ -210,7 +210,7 @@ export default function ITHelpdeskDashboard() {
         }}
       />
 
-      <DashboardHeader
+      <Header
         onCreateTicket={() => setIsCreateDialogOpen(true)}
         onNavigate={handleNavigation}
       />
@@ -227,7 +227,7 @@ export default function ITHelpdeskDashboard() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 3 }}
+          transition={{ duration: 0.6, delay: 2.5 }}
         >
           <Tabs
             value={activeTab}
@@ -237,7 +237,7 @@ export default function ITHelpdeskDashboard() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 3.2 }}
+              transition={{ duration: 0.5, delay: 2.5 }}
             >
               <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-slate-600/30">
                 <TabsTrigger
@@ -259,7 +259,7 @@ export default function ITHelpdeskDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 3.5 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
               >
                 <StatsCards
                   totalTickets={totalTickets}
@@ -271,7 +271,7 @@ export default function ITHelpdeskDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 3.8 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
               >
                 <ChartsSection
                   statusChartData={statusChartData}

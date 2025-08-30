@@ -58,7 +58,7 @@ export function HeroSection() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-3 mb-6"
+            className="inline-flex items-center gap-3 sm:mb-6"
           >
             <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-2xl">
               <TicketIcon className="h-8 w-8 text-white" />
@@ -68,7 +68,7 @@ export function HeroSection() {
             </h1>
           </motion.div>
 
-          <div className="h-16 flex items-center justify-center mb-8">
+          <div className="h-16 flex items-center justify-center sm:mb-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl text-slate-300 font-medium min-h-[2rem]">
               {displayText}
               <motion.span
