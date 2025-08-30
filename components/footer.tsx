@@ -5,7 +5,7 @@ export function Footer() {
         <p className=" text-slate-400">
           © {new Date().getFullYear()} NexusDesk - IT Ticketing System
         </p>
-        <p className="text-sm text-slate-400">
+        <p className="text-slate-400">
           Made with ❤️ by{" "}
           <a href="https://narayankhanal.vercel.app" target="_blank">
             Narayan Khanal
