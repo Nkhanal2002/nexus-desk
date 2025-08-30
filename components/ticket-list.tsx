@@ -164,7 +164,7 @@ export function TicketList({
                 size="sm"
                 variant="outline"
                 onClick={() => onUpdateTicketStatus(ticket.id, "In Progress")}
-                className=" cursor-pointer border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                className=" cursor-pointer border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
               >
                 Start Progress
               </Button>
@@ -174,7 +174,7 @@ export function TicketList({
                 size="sm"
                 variant="outline"
                 onClick={() => onUpdateTicketStatus(ticket.id, "Resolved")}
-                className=" cursor-pointer border-slate-600 text-slate-200 hover:bg-slate-700 hover:text-white"
+                className=" cursor-pointer border-slate-600 text-slate-200 bg-slate-600 hover:bg-slate-700 hover:text-white"
               >
                 Mark Resolved
               </Button>
@@ -220,60 +220,69 @@ export function TicketList({
             placeholder="Search tickets by ID, title, description, or requester..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-slate-800/50 border-slate-600/30 text-white placeholder:text-slate-400 backdrop-blur-sm"
+            className=" bg-slate-800/50 border-slate-600/30 text-white placeholder:text-slate-400 backdrop-blur-sm text-xs sm:text-base"
           />
         </div>
         <div className="flex gap-2">
           <Select value={filterPriority} onValueChange={setFilterPriority}>
             <SelectTrigger className="w-[140px] sm:w-[180px] bg-slate-800/50 border-slate-600/30 text-white backdrop-blur-sm">
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="h-4" />
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-600">
-              <SelectItem value="all" className="text-white hover:bg-slate-700">
+            <SelectContent className="bg-slate-800 border-slate-600 ">
+              <SelectItem
+                value="all"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
+              >
                 All Priorities
               </SelectItem>
               <SelectItem
                 value="High"
-                className="text-white hover:bg-slate-700"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
               >
                 High
               </SelectItem>
               <SelectItem
                 value="Medium"
-                className="text-white hover:bg-slate-700"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
               >
                 Medium
               </SelectItem>
-              <SelectItem value="Low" className="text-white hover:bg-slate-700">
+              <SelectItem
+                value="Low"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
+              >
                 Low
               </SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className="w-[140px] sm:w-[180px] bg-slate-800/50 border-slate-600/30 text-white backdrop-blur-sm">
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="h-4" />
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent className="bg-slate-800 border-slate-600">
-              <SelectItem value="all" className="text-white hover:bg-slate-700">
+              <SelectItem
+                value="all"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
+              >
                 All Statuses
               </SelectItem>
               <SelectItem
                 value="Open"
-                className="text-white hover:bg-slate-700"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
               >
                 Open
               </SelectItem>
               <SelectItem
                 value="In Progress"
-                className="text-white hover:bg-slate-700"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
               >
                 In Progress
               </SelectItem>
               <SelectItem
                 value="Resolved"
-                className="text-white hover:bg-slate-700"
+                className="text-white hover:bg-slate-700 text-xs sm:text-base"
               >
                 Resolved
               </SelectItem>
